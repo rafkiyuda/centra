@@ -361,31 +361,41 @@ const VoiceCommandModal = ({ onClose }) => {
       let contextPrompt = "";
       const lowerText = text.toLowerCase();
       
+      const knowledgeBase = `
+[KNOWLEDGE BASE CENTRA APP]:
+- Transfer: Transfer cepat & bebas biaya admin ke bank mana saja. Bisa transfer rekening, VA, dan bayar pakai QRIS.
+- CENTRA Care+: Layanan integrasi kesehatan (konsultasi Halodoc, beli obat) dan asuransi dari Allianz/Prudential. Tidak perlu pindah aplikasi!
+- Circle CENTRA: Terdiri dari 'Shared Pockets' untuk tabungan bersama (misal kado atau liburan), dan 'Split Bill' untuk otomatis menagih teman setelah makan bareng.
+- Top Up: Isi saldo e-Wallet (GoPay, DANA, dll) dan beli pulsa/paket data dari provider apa saja.
+- CENTRA Mall (Belanja): Ekosistem belanja online terintegrasi. Beli elektronik, baju, makanan langsung pakai Saldo CENTRA atau Poin.
+- Bayar Tagihan: Bayar listrik PLN, air PDAM, internet, atau cicilan kartu kredit dengan pengingat pintar.
+`;
+
       if (lowerText.includes('transfer') || lowerText.includes('kirim')) {
         navigateTo = '/transfer?tutorial=true';
-        contextPrompt = " Beritahu pengguna bahwa Anda sedang membuka halaman Transfer dan akan memandu mereka.";
+        contextPrompt = " Beritahu pengguna bahwa Anda akan membuka halaman Transfer. Jelaskan sedikit kemudahan transfer di CENTRA.";
       } else if (lowerText.includes('care') || lowerText.includes('kesehatan') || lowerText.includes('asuransi')) {
         navigateTo = '/care?tutorial=true';
-        contextPrompt = " Beritahu pengguna bahwa Anda sedang membuka halaman CENTRA Care+ dan akan memandu mereka.";
+        contextPrompt = " Beritahu Anda akan membuka halaman CENTRA Care+. Jelaskan dengan hangat fitur luar biasa Care+ ini.";
       } else if (lowerText.includes('top up') || lowerText.includes('pulsa') || lowerText.includes('topup')) {
-        navigateTo = '/topup';
-        contextPrompt = " Beritahu pengguna bahwa Anda sedang membuka halaman Top Up.";
+        navigateTo = '/topup?tutorial=true';
+        contextPrompt = " Beritahu Anda akan membuka halaman Top Up. Sebutkan apa saja yang bisa ditop-up.";
       } else if (lowerText.includes('belanja') || lowerText.includes('mall') || lowerText.includes('keranjang')) {
-        navigateTo = '/belanja';
-        contextPrompt = " Beritahu pengguna bahwa Anda sedang membuka CENTRA Mall.";
+        navigateTo = '/belanja?tutorial=true';
+        contextPrompt = " Beritahu Anda akan membuka CENTRA Mall. Ajak pengguna menikmati pengalaman belanja yang mudah.";
       } else if (lowerText.includes('bayar') || lowerText.includes('tagihan') || lowerText.includes('listrik')) {
-        navigateTo = '/bayar';
-        contextPrompt = " Beritahu pengguna bahwa Anda sedang membuka halaman Pembayaran Tagihan.";
+        navigateTo = '/bayar?tutorial=true';
+        contextPrompt = " Beritahu Anda akan membuka halaman Tagihan. Tekankan bahwa bayar tagihan jadi bebas repot.";
       } else if (lowerText.includes('circle') || lowerText.includes('grup') || lowerText.includes('patungan') || lowerText.includes('split')) {
-        navigateTo = '/circle';
-        contextPrompt = " Beritahu pengguna bahwa Anda sedang membuka halaman Circle CENTRA.";
+        navigateTo = '/circle?tutorial=true';
+        contextPrompt = " Beritahu Anda akan membuka Circle CENTRA. Jelaskan serunya Split Bill atau Shared Pockets dengan teman.";
       }
       
       const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite-preview:generateContent?key=${apiKey}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          contents: [{ parts: [{ text: "Anda adalah CITA, asisten AI untuk bank CENTRA. Jawablah permintaan ini dengan bahasa Indonesia yang ramah, sopan, membantu, dan singkat (maksimal 2 kalimat pendek)." + contextPrompt + " Permintaan: " + text }] }]
+          contents: [{ parts: [{ text: "Anda adalah CITA, asisten AI cerdas, hangat, dan informatif untuk bank CENTRA. " + knowledgeBase + " Instruksi Khusus: Jawab permintaan berikut maksimal 3 kalimat saja. " + contextPrompt + " Permintaan: " + text }] }]
         })
       });
       
