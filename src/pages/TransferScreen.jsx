@@ -18,7 +18,7 @@ const TransferScreen = () => {
 
   // Dummy Contacts
   const recentContacts = [
-    { name: 'Sasa (Istri)', bank: 'BCA', account: '8729 0192 11', initial: 'S', color: '#FFB800' },
+    { name: 'Reza (Suami)', bank: 'BCA', account: '8729 0192 11', initial: 'R', color: '#FFB800' },
     { name: 'Budi (Kantor)', bank: 'Mandiri', account: '112 00 9821 213', initial: 'B', color: '#4CAF50' },
     { name: 'Rina (Kost)', bank: 'CENTRA', account: '0782 1111 2233', initial: 'R', color: '#6B5DC2' }
   ];

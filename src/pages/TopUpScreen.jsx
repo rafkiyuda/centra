@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, Search, Wallet, Smartphone, ChevronRight, CheckCircle2 } from 'lucide-react';
+import TutorialGuide from '../components/TutorialGuide';
 
 const TopUpScreen = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isTutorial = new URLSearchParams(location.search).get('tutorial') === 'true';
+  const [showTutorial, setShowTutorial] = useState(isTutorial);
+
   const [step, setStep] = useState(1); // 1: Select Service, 2: Number, 3: Amount, 4: PIN, 5: Success
   
   // State data
@@ -68,6 +73,7 @@ const TopUpScreen = () => {
         <Search color="#999" size={20} style={{ position: 'absolute', left: '16px', top: '18px' }} />
       </div>
 
+      <div id="tutorial-ewallet">
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
         <Wallet color="var(--primary)" size={20} />
         <h3 style={{ margin: 0, fontSize: '16px', fontWeight: '700', color: '#1F1F1F' }}>e-Wallet</h3>
@@ -82,7 +88,9 @@ const TopUpScreen = () => {
           </div>
         ))}
       </div>
+      </div>
 
+      <div id="tutorial-pulsa">
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
         <Smartphone color="var(--primary)" size={20} />
         <h3 style={{ margin: 0, fontSize: '16px', fontWeight: '700', color: '#1F1F1F' }}>Pulsa & Paket Data</h3>
@@ -99,6 +107,7 @@ const TopUpScreen = () => {
              <ChevronRight color="#CCC" size={20} />
           </div>
         ))}
+      </div>
       </div>
     </div>
   );
@@ -248,8 +257,17 @@ const TopUpScreen = () => {
     </div>
   );
 
+  const tutorialSteps = [
+    { targetId: 'tutorial-ewallet', title: 'Top Up e-Wallet', content: 'Pilih e-Wallet tujuan Anda di sini. Kami mendukung semua dompet digital utama!' },
+    { targetId: 'tutorial-pulsa', title: 'Isi Pulsa & Paket Data', content: 'Anda juga bisa membeli pulsa atau paket data langsung dari provider favorit Anda.' }
+  ];
+
   return (
-    <div style={{ backgroundColor: '#F8F9FE', minHeight: '100vh', paddingBottom: '40px' }}>
+    <div style={{ backgroundColor: '#F8F9FE', minHeight: '100vh', paddingBottom: '40px', position: 'relative' }}>
+      {showTutorial && step === 1 && (
+         <TutorialGuide steps={tutorialSteps} onComplete={() => setShowTutorial(false)} />
+      )}
+      
       {step < 5 && (
         <div style={{ padding: '24px 20px', display: 'flex', alignItems: 'center', gap: '16px', position: 'sticky', top: 0, backgroundColor: '#F8F9FE', zIndex: 10 }}>
           <div onClick={() => step > 1 ? setStep(step - 1) : navigate(-1)} style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>

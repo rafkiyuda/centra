@@ -833,6 +833,7 @@ const IndependentMode = () => {
 
 const AssistedMode = () => {
   const navigate = useNavigate();
+  const [showBalance, setShowBalance] = useState(false);
   return (
     <>
       {/* Floating Mode Indicator on the Left */}
@@ -869,21 +870,28 @@ const AssistedMode = () => {
           flexDirection: 'column',
           alignItems: 'center'
         }}>
-          <p style={{ fontSize: '16px', margin: 0, opacity: 0.9, marginBottom: '8px' }}>Saldo Anda:</p>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '0 20px', marginBottom: '8px' }}>
+            <p style={{ fontSize: '16px', margin: 0, opacity: 0.9 }}>Saldo Anda:</p>
+            <div onClick={() => setShowBalance(!showBalance)} style={{ cursor: 'pointer', padding: '8px', backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: '50%' }}>
+              {showBalance ? <EyeOff size={20} color="white" /> : <Eye size={20} color="white" />}
+            </div>
+          </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '32px' }}>
             <span style={{ fontSize: '24px', fontWeight: '600' }}>Rp</span>
-            <span style={{ fontSize: '48px', fontWeight: '800', letterSpacing: '-1px' }}>1.000.000</span>
+            <span style={{ fontSize: '48px', fontWeight: '800', letterSpacing: '-1px' }}>
+              {showBalance ? '1.000.000' : '•••••••'}
+            </span>
           </div>
 
           {/* Large Main Actions */}
           <div style={{ display: 'flex', justifyContent: 'space-around', width: '100%' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+            <div onClick={() => navigate('/transfer?tutorial=true')} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
               <div style={{ width: '64px', height: '64px', borderRadius: '50%', border: '2px solid rgba(255,255,255,0.8)', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <Send size={28} color="white" />
               </div>
               <span style={{ fontSize: '14px', fontWeight: '600' }}>Transfer</span>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+            <div onClick={() => navigate('/topup?tutorial=true')} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
               <div style={{ width: '64px', height: '64px', borderRadius: '50%', border: '2px solid rgba(255,255,255,0.8)', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <PlusCircle size={28} color="white" />
               </div>
@@ -904,17 +912,17 @@ const AssistedMode = () => {
           
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
             {/* Pill 1 */}
-            <div style={{ backgroundColor: '#F4F4F4', borderRadius: '30px', padding: '8px 16px 8px 8px', display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
+            <div onClick={() => navigate('/transfer?tutorial=true')} style={{ backgroundColor: '#F4F4F4', borderRadius: '30px', padding: '8px 16px 8px 8px', display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
               <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#FFD180', display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'hidden' }}>
                  {/* Avatar placeholder */}
                  <div style={{ width: '16px', height: '16px', backgroundColor: '#333', borderRadius: '50%', marginBottom: '12px' }}></div>
                  <div style={{ width: '28px', height: '28px', backgroundColor: '#A84232', borderRadius: '14px 14px 0 0', position: 'absolute', bottom: '-8px' }}></div>
               </div>
-              <span style={{ fontSize: '14px', fontWeight: '600', color: '#1F1F1F', lineHeight: '1.2' }}>Transfer<br/>ke Sasa</span>
+              <span style={{ fontSize: '14px', fontWeight: '600', color: '#1F1F1F', lineHeight: '1.2' }}>Transfer<br/>ke Reza</span>
             </div>
             
             {/* Pill 2 */}
-            <div style={{ backgroundColor: '#F4F4F4', borderRadius: '30px', padding: '8px 16px 8px 8px', display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
+            <div onClick={() => navigate('/topup')} style={{ backgroundColor: '#F4F4F4', borderRadius: '30px', padding: '8px 16px 8px 8px', display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
               <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#264653', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                  <Smartphone size={18} color="white" />
               </div>
@@ -922,7 +930,7 @@ const AssistedMode = () => {
             </div>
 
             {/* Pill 3 */}
-            <div style={{ backgroundColor: '#F4F4F4', borderRadius: '30px', padding: '8px 16px 8px 8px', display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
+            <div onClick={() => navigate('/topup')} style={{ backgroundColor: '#F4F4F4', borderRadius: '30px', padding: '8px 16px 8px 8px', display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
               <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#00A8E8', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                  <div style={{ width: '20px', height: '14px', backgroundColor: 'white', borderRadius: '4px', position: 'relative' }}>
                     <div style={{ position: 'absolute', top: '4px', right: '-2px', width: '8px', height: '6px', backgroundColor: '#00A8E8', borderRadius: '2px' }}></div>
@@ -932,7 +940,7 @@ const AssistedMode = () => {
             </div>
 
             {/* Pill 4 */}
-            <div style={{ backgroundColor: '#F4F4F4', borderRadius: '30px', padding: '8px 16px 8px 8px', display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
+            <div onClick={() => navigate('/topup')} style={{ backgroundColor: '#F4F4F4', borderRadius: '30px', padding: '8px 16px 8px 8px', display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
               <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#264653', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                  <Smartphone size={18} color="white" />
               </div>
