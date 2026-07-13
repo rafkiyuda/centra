@@ -86,15 +86,16 @@ const AssessmentScreen = () => {
   };
 
   const calculateScoreAndNavigate = (finalAnswers) => {
-    let totalScore = 0;
-    Object.values(finalAnswers).forEach(score => totalScore += score);
+    // Mode determination logic based on user answers
+    const q1Score = finalAnswers[1]; // 1 = Masih membutuhkan bantuan
+    const q2Score = finalAnswers[2]; // 2 = Jarang, 1 = Belum pernah
     
-    // Max score is 15. Let's say < 10 is Assisted mode.
-    const mode = totalScore >= 10 ? 'Independent' : 'Assisted';
+    const mode = (q1Score === 1 || q2Score <= 2) ? 'Assisted' : 'Independent';
     
-    console.log("Assessment completed. Score:", totalScore, "Mode:", mode);
-    // Navigate to dashboard and pass mode
-    navigate('/dashboard', { state: { mode } });
+    console.log("Assessment completed. Mode:", mode);
+    localStorage.setItem('centra_mode', mode);
+    // Navigate to dashboard
+    navigate('/dashboard');
   };
 
   const inputStyle = {
