@@ -499,8 +499,18 @@ const VoiceCommandModal = ({ onClose }) => {
 
 const FloatingCita = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [activeModal, setActiveModal] = useState(null);
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    if (searchParams.get('openCita') === 'true') {
+      setActiveModal('voice');
+      // Clean up the URL so it doesn't reopen if the user refreshes
+      navigate('/dashboard', { replace: true });
+    }
+  }, [location, navigate]);
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
