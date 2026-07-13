@@ -6,7 +6,7 @@ import {
   ArrowUpRight, ArrowDownLeft, Smartphone,
   Mic, BookOpen, Video, X, Loader2, ArrowRight
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Header = () => (
   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 24px 16px' }}>
