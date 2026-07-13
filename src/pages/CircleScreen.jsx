@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, Users, PlusCircle, ArrowUpRight, ArrowDownLeft, Target, Receipt, Share2, MoreHorizontal, CheckCircle2 } from 'lucide-react';
+import TutorialGuide from '../components/TutorialGuide';
 
 const CircleScreen = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isTutorial = new URLSearchParams(location.search).get('tutorial') === 'true';
+  const [showTutorial, setShowTutorial] = useState(isTutorial);
   const [activeTab, setActiveTab] = useState('pockets'); // pockets, split
   const [selectedPocket, setSelectedPocket] = useState(null);
 
@@ -131,7 +135,7 @@ const CircleScreen = () => {
       </div>
 
       {/* Tabs */}
-      <div style={{ display: 'flex', padding: '0 24px', backgroundColor: 'white', borderBottom: '1px solid #EAEAEA' }}>
+      <div id="tutorial-tabs" style={{ display: 'flex', padding: '0 24px', backgroundColor: 'white', borderBottom: '1px solid #EAEAEA' }}>
         <div 
           onClick={() => setActiveTab('pockets')}
           style={{ flex: 1, padding: '16px 0', textAlign: 'center', fontWeight: '700', fontSize: '14px', color: activeTab === 'pockets' ? 'var(--primary)' : '#999', borderBottom: activeTab === 'pockets' ? '2px solid var(--primary)' : '2px solid transparent', cursor: 'pointer' }}
@@ -148,7 +152,7 @@ const CircleScreen = () => {
 
       <div style={{ padding: '24px' }}>
         {activeTab === 'pockets' && (
-          <div className="animate-fade-in">
+          <div id="tutorial-pockets" className="animate-fade-in">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
               <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#1F1F1F', margin: 0 }}>Grup Tabungan Aktif</h3>
               <button style={{ padding: '8px 16px', borderRadius: '20px', backgroundColor: '#F0EFFF', color: 'var(--primary)', border: 'none', fontWeight: '700', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
@@ -229,6 +233,16 @@ const CircleScreen = () => {
           </div>
         )}
       </div>
+
+      {showTutorial && activeTab === 'pockets' && !selectedPocket && (
+         <TutorialGuide 
+           steps={[
+             { targetId: 'tutorial-tabs', title: 'Pilih Mode', content: 'Gunakan tab ini untuk berpindah antara fitur tabungan bersama (Shared Pockets) dan patungan tagihan (Split Bill).' },
+             { targetId: 'tutorial-pockets', title: 'Grup Tabungan', content: 'Daftar semua tabungan bersama Anda. Pantau progress, tambah anggota, dan capai target bersama!' }
+           ]} 
+           onComplete={() => setShowTutorial(false)} 
+         />
+      )}
     </div>
   );
 };

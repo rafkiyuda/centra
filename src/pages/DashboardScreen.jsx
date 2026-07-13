@@ -521,6 +521,12 @@ const FloatingCita = () => {
                <button onClick={() => { closeModal(); navigate('/transfer?tutorial=true'); }} style={{ padding: '16px', borderRadius: '16px', border: '1px solid #EAEAEA', backgroundColor: 'white', color: 'var(--primary)', fontWeight: '700', fontSize: '15px', width: '100%', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                  <span>Panduan Transfer</span> <ArrowRight size={18} />
                </button>
+               <button onClick={() => { closeModal(); navigate('/topup?tutorial=true'); }} style={{ padding: '16px', borderRadius: '16px', border: '1px solid #EAEAEA', backgroundColor: 'white', color: 'var(--primary)', fontWeight: '700', fontSize: '15px', width: '100%', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                 <span>Panduan Top Up</span> <ArrowRight size={18} />
+               </button>
+               <button onClick={() => { closeModal(); navigate('/circle?tutorial=true'); }} style={{ padding: '16px', borderRadius: '16px', border: '1px solid #EAEAEA', backgroundColor: 'white', color: 'var(--primary)', fontWeight: '700', fontSize: '15px', width: '100%', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                 <span>Panduan Circle CENTRA</span> <ArrowRight size={18} />
+               </button>
                <button onClick={() => { closeModal(); navigate('/care?tutorial=true'); }} style={{ padding: '16px', borderRadius: '16px', border: '1px solid #EAEAEA', backgroundColor: 'white', color: 'var(--primary)', fontWeight: '700', fontSize: '15px', width: '100%', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                  <span>Panduan Care+</span> <ArrowRight size={18} />
                </button>
