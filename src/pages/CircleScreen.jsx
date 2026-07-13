@@ -7,7 +7,7 @@ const CircleScreen = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isTutorial = new URLSearchParams(location.search).get('tutorial') === 'true';
-  const [showTutorial, setShowTutorial] = useState(isTutorial);
+  const [showTutorial, setShowTutorial] = useState(isTutorial ? 'pockets' : false);
   const [activeTab, setActiveTab] = useState('pockets'); // pockets, split
   const [selectedPocket, setSelectedPocket] = useState(null);
 
@@ -189,7 +189,7 @@ const CircleScreen = () => {
         )}
 
         {activeTab === 'split' && (
-          <div className="animate-fade-in">
+          <div id="tutorial-split" className="animate-fade-in">
              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
               <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#1F1F1F', margin: 0 }}>Tagihan Split Bill</h3>
               <button style={{ padding: '8px 16px', borderRadius: '20px', backgroundColor: '#F0EFFF', color: 'var(--primary)', border: 'none', fontWeight: '700', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
@@ -234,11 +234,23 @@ const CircleScreen = () => {
         )}
       </div>
 
-      {showTutorial && activeTab === 'pockets' && !selectedPocket && (
+      {showTutorial === 'pockets' && activeTab === 'pockets' && !selectedPocket && (
          <TutorialGuide 
            steps={[
              { targetId: 'tutorial-tabs', title: 'Pilih Mode', content: 'Gunakan tab ini untuk berpindah antara fitur tabungan bersama (Shared Pockets) dan patungan tagihan (Split Bill).' },
              { targetId: 'tutorial-pockets', title: 'Grup Tabungan', content: 'Daftar semua tabungan bersama Anda. Pantau progress, tambah anggota, dan capai target bersama!' }
+           ]} 
+           onComplete={() => {
+             setActiveTab('split');
+             setTimeout(() => setShowTutorial('split'), 100);
+           }} 
+         />
+      )}
+
+      {showTutorial === 'split' && activeTab === 'split' && !selectedPocket && (
+         <TutorialGuide 
+           steps={[
+             { targetId: 'tutorial-split', title: 'Split Bill Otomatis', content: 'Fitur ini memungkinkan Anda membagi tagihan makan, patungan kado, atau patungan langganan aplikasi. Kami akan mengirimkan pengingat otomatis ke teman yang belum membayar!' }
            ]} 
            onComplete={() => setShowTutorial(false)} 
          />

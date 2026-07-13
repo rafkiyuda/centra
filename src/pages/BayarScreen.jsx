@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, Search, Zap, Droplets, Wifi, CreditCard, CheckCircle2, Loader2 } from 'lucide-react';
+import TutorialGuide from '../components/TutorialGuide';
 
 const BayarScreen = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isTutorial = new URLSearchParams(location.search).get('tutorial') === 'true';
+  const [showTutorial, setShowTutorial] = useState(isTutorial);
   const [step, setStep] = useState(1); // 1: Category, 2: Input ID, 3: Loading, 4: Bill Details, 5: Success
   
   const [category, setCategory] = useState(null);
@@ -49,7 +53,7 @@ const BayarScreen = () => {
 
   const renderStep1 = () => (
     <div className="animate-fade-in" style={{ padding: '24px' }}>
-      <div style={{ position: 'relative', marginBottom: '32px' }}>
+      <div id="tutorial-search" style={{ position: 'relative', marginBottom: '32px' }}>
         <input 
           type="text" 
           placeholder="Cari layanan tagihan" 
@@ -59,7 +63,7 @@ const BayarScreen = () => {
       </div>
 
       <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '16px', color: '#1F1F1F' }}>Kategori Tagihan</h3>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(1, 1fr)', gap: '12px' }}>
+      <div id="tutorial-categories" style={{ display: 'grid', gridTemplateColumns: 'repeat(1, 1fr)', gap: '12px' }}>
         {categories.map((cat) => (
           <div key={cat.id} onClick={() => handleSelectCategory(cat)} style={{ backgroundColor: 'white', padding: '20px', borderRadius: '16px', display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
              <div style={{ width: '48px', height: '48px', borderRadius: '12px', backgroundColor: `${cat.color}20`, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -182,8 +186,17 @@ const BayarScreen = () => {
     </div>
   );
 
+  const tutorialSteps = [
+    { targetId: 'tutorial-search', title: 'Pencarian Tagihan', content: 'Ketik nama layanan atau instansi untuk mencari jenis tagihan dengan cepat.' },
+    { targetId: 'tutorial-categories', title: 'Kategori Lengkap', content: 'Pilih jenis tagihan Anda di sini. Kami menyediakan pembayaran untuk Listrik, PDAM, Internet, hingga Kartu Kredit.' }
+  ];
+
   return (
-    <div style={{ backgroundColor: '#F8F9FE', minHeight: '100vh', paddingBottom: '40px' }}>
+    <div style={{ backgroundColor: '#F8F9FE', minHeight: '100vh', position: 'relative' }}>
+      {showTutorial && step === 1 && (
+         <TutorialGuide steps={tutorialSteps} onComplete={() => setShowTutorial(false)} />
+      )}
+      
       {step < 3 && (
         <div style={{ padding: '24px 20px', display: 'flex', alignItems: 'center', gap: '16px', position: 'sticky', top: 0, backgroundColor: '#F8F9FE', zIndex: 10 }}>
           <div onClick={() => step > 1 ? setStep(step - 1) : navigate(-1)} style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>

@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, Search, ShoppingCart, Star, Heart, CheckCircle2, ChevronRight, Package, Truck, Wallet, Eye, EyeOff } from 'lucide-react';
+import TutorialGuide from '../components/TutorialGuide';
 
 const BelanjaScreen = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isTutorial = new URLSearchParams(location.search).get('tutorial') === 'true';
+  const [showTutorial, setShowTutorial] = useState(isTutorial);
   const [step, setStep] = useState(1); // 1: Home, 2: Checkout, 3: Success
   const [cart, setCart] = useState([]);
   const [showBalance, setShowBalance] = useState(false);
@@ -44,7 +48,7 @@ const BelanjaScreen = () => {
           </div>
           <h2 style={{ margin: 0, fontSize: '20px', fontWeight: '800', color: '#1F1F1F' }}>CENTRA Mall</h2>
         </div>
-        <div style={{ position: 'relative', cursor: 'pointer' }} onClick={() => cart.length > 0 && setStep(2)}>
+        <div id="tutorial-cart" style={{ position: 'relative', cursor: 'pointer' }} onClick={() => cart.length > 0 && setStep(2)}>
           <ShoppingCart color="#1F1F1F" size={24} />
           {cart.length > 0 && (
             <div style={{ position: 'absolute', top: '-8px', right: '-8px', backgroundColor: '#FF4A4A', color: 'white', fontSize: '10px', fontWeight: '800', width: '18px', height: '18px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -66,7 +70,7 @@ const BelanjaScreen = () => {
         </div>
 
         {/* Banner Promo */}
-        <div style={{ width: '100%', height: '160px', borderRadius: '24px', background: 'linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%)', position: 'relative', overflow: 'hidden', marginBottom: '24px', padding: '24px', color: 'white', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+        <div id="tutorial-promo" style={{ width: '100%', height: '160px', borderRadius: '24px', background: 'linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%)', position: 'relative', overflow: 'hidden', marginBottom: '24px', padding: '24px', color: 'white', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
            <h2 style={{ margin: 0, fontSize: '24px', fontWeight: '800', maxWidth: '60%' }}>Payday Sale!</h2>
            <p style={{ margin: '8px 0 0 0', fontSize: '14px', opacity: 0.9, maxWidth: '60%' }}>Diskon hingga 70% pakai CENTRA Pay</p>
            <button style={{ padding: '8px 16px', backgroundColor: 'white', color: '#FF6B6B', border: 'none', borderRadius: '20px', fontWeight: '700', fontSize: '12px', width: 'fit-content', marginTop: '16px', cursor: 'pointer' }}>Belanja Sekarang</button>
@@ -90,7 +94,7 @@ const BelanjaScreen = () => {
 
         {/* Products Grid */}
         <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '16px', color: '#1F1F1F' }}>Rekomendasi Untukmu</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' }}>
+        <div id="tutorial-products" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' }}>
           {products.filter(p => activeCategory === 'Semua' || p.category === activeCategory).map(product => (
             <div key={product.id} style={{ backgroundColor: 'white', borderRadius: '20px', overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.03)' }}>
                <div style={{ width: '100%', height: '150px', position: 'relative' }}>
@@ -267,8 +271,18 @@ const BelanjaScreen = () => {
     </div>
   );
 
+  const tutorialSteps = [
+    { targetId: 'tutorial-promo', title: 'Promo Eksklusif', content: 'Dapatkan diskon dan penawaran terbaik setiap harinya dari CENTRA Mall.' },
+    { targetId: 'tutorial-products', title: 'Katalog Produk', content: 'Jelajahi berbagai kategori produk, dari elektronik hingga makanan ringan dengan harga terjangkau.' },
+    { targetId: 'tutorial-cart', title: 'Keranjang Belanja', content: 'Produk yang Anda tambahkan akan masuk ke sini. Anda bisa langsung checkout menggunakan Saldo CENTRA atau Poin Care+!' }
+  ];
+
   return (
-    <div style={{ backgroundColor: '#F8F9FE', minHeight: '100vh' }}>
+    <div style={{ backgroundColor: '#F8F9FE', minHeight: '100vh', position: 'relative' }}>
+      {showTutorial && step === 1 && (
+         <TutorialGuide steps={tutorialSteps} onComplete={() => setShowTutorial(false)} />
+      )}
+      
       {step === 1 && renderStep1()}
       {step === 2 && renderStep2()}
       {step === 3 && renderStep3()}
