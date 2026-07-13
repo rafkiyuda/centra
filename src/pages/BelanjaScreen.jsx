@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Search, ShoppingCart, Star, Heart, CheckCircle2, ChevronRight, Package, Truck, Wallet } from 'lucide-react';
+import { ArrowLeft, Search, ShoppingCart, Star, Heart, CheckCircle2, ChevronRight, Package, Truck, Wallet, Eye, EyeOff } from 'lucide-react';
 
 const BelanjaScreen = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1); // 1: Home, 2: Checkout, 3: Success
   const [cart, setCart] = useState([]);
+  const [showBalance, setShowBalance] = useState(false);
   
   const formatRupiah = (angka) => {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka || 0);
@@ -190,9 +191,14 @@ const BelanjaScreen = () => {
 
         {/* Pembayaran */}
         <div style={{ backgroundColor: 'white', borderRadius: '20px', padding: '20px', marginBottom: '32px', boxShadow: '0 4px 16px rgba(0,0,0,0.03)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-             <Wallet size={18} color="var(--primary)" />
-             <h3 style={{ margin: 0, fontSize: '15px', fontWeight: '700', color: '#1F1F1F' }}>Metode Pembayaran</h3>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Wallet size={18} color="var(--primary)" />
+                <h3 style={{ margin: 0, fontSize: '15px', fontWeight: '700', color: '#1F1F1F' }}>Metode Pembayaran</h3>
+             </div>
+             <div onClick={() => setShowBalance(!showBalance)} style={{ cursor: 'pointer', padding: '4px' }}>
+               {showBalance ? <EyeOff size={16} color="#999" /> : <Eye size={16} color="#999" />}
+             </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'var(--bg-gradient)', display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'white', fontWeight: '800', fontSize: '12px' }}>
@@ -200,7 +206,7 @@ const BelanjaScreen = () => {
             </div>
             <div style={{ flex: 1 }}>
               <p style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: '700', color: '#1F1F1F' }}>Saldo CENTRA</p>
-              <p style={{ margin: 0, fontSize: '12px', color: '#666' }}>Sisa saldo: Rp 1.000.000</p>
+              <p style={{ margin: 0, fontSize: '12px', color: '#666' }}>Sisa saldo: {showBalance ? 'Rp 1.000.000' : 'Rp •••••••'}</p>
             </div>
             <CheckCircle2 size={24} color="var(--primary)" />
           </div>

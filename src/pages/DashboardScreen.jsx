@@ -295,6 +295,7 @@ const VideoCallModal = ({ onClose }) => {
 };
 
 const VoiceCommandModal = ({ onClose }) => {
+  const navigate = useNavigate();
   const [status, setStatus] = useState('idle'); // 'listening', 'processing', 'answering', 'error'
   const [transcript, setTranscript] = useState('');
   const [geminiResponse, setGeminiResponse] = useState('');
@@ -341,7 +342,7 @@ const VoiceCommandModal = ({ onClose }) => {
 
     return () => {
        recognition.stop();
-       window.speechSynthesis.cancel();
+       // Note: Intentionally NOT cancelling speechSynthesis here so the AI can continue talking while navigating
     };
   }, []);
 
@@ -355,12 +356,36 @@ const VoiceCommandModal = ({ onClose }) => {
          speakAnswer("Maaf, kunci API Gemini belum diatur di sistem.");
          return;
       }
+
+      let navigateTo = null;
+      let contextPrompt = "";
+      const lowerText = text.toLowerCase();
+      
+      if (lowerText.includes('transfer') || lowerText.includes('kirim')) {
+        navigateTo = '/transfer?tutorial=true';
+        contextPrompt = " Beritahu pengguna bahwa Anda sedang membuka halaman Transfer dan akan memandu mereka.";
+      } else if (lowerText.includes('care') || lowerText.includes('kesehatan') || lowerText.includes('asuransi')) {
+        navigateTo = '/care?tutorial=true';
+        contextPrompt = " Beritahu pengguna bahwa Anda sedang membuka halaman CENTRA Care+ dan akan memandu mereka.";
+      } else if (lowerText.includes('top up') || lowerText.includes('pulsa') || lowerText.includes('topup')) {
+        navigateTo = '/topup';
+        contextPrompt = " Beritahu pengguna bahwa Anda sedang membuka halaman Top Up.";
+      } else if (lowerText.includes('belanja') || lowerText.includes('mall') || lowerText.includes('keranjang')) {
+        navigateTo = '/belanja';
+        contextPrompt = " Beritahu pengguna bahwa Anda sedang membuka CENTRA Mall.";
+      } else if (lowerText.includes('bayar') || lowerText.includes('tagihan') || lowerText.includes('listrik')) {
+        navigateTo = '/bayar';
+        contextPrompt = " Beritahu pengguna bahwa Anda sedang membuka halaman Pembayaran Tagihan.";
+      } else if (lowerText.includes('circle') || lowerText.includes('grup') || lowerText.includes('patungan') || lowerText.includes('split')) {
+        navigateTo = '/circle';
+        contextPrompt = " Beritahu pengguna bahwa Anda sedang membuka halaman Circle CENTRA.";
+      }
       
       const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite-preview:generateContent?key=${apiKey}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          contents: [{ parts: [{ text: "Anda adalah CITA, asisten AI untuk bank CENTRA. Jawablah permintaan ini dengan bahasa Indonesia yang ramah, sopan, membantu, dan singkat (maksimal 2 kalimat pendek): " + text }] }]
+          contents: [{ parts: [{ text: "Anda adalah CITA, asisten AI untuk bank CENTRA. Jawablah permintaan ini dengan bahasa Indonesia yang ramah, sopan, membantu, dan singkat (maksimal 2 kalimat pendek)." + contextPrompt + " Permintaan: " + text }] }]
         })
       });
       
@@ -368,7 +393,7 @@ const VoiceCommandModal = ({ onClose }) => {
       if (data.candidates && data.candidates[0].content) {
          const answer = data.candidates[0].content.parts[0].text;
          setGeminiResponse(answer);
-         speakAnswer(answer);
+         speakAnswer(answer, navigateTo);
       } else if (data.error && data.error.message) {
          throw new Error(`API Error: ${data.error.message}`);
       } else {
@@ -382,13 +407,20 @@ const VoiceCommandModal = ({ onClose }) => {
     }
   };
 
-  const speakAnswer = (text) => {
+  const speakAnswer = (text, navigateTo) => {
     setStatus('answering');
     const cleanText = text.replace(/[*_#]/g, '');
     const utterance = new SpeechSynthesisUtterance(cleanText);
     utterance.lang = 'id-ID';
     utterance.pitch = 1.1; 
     window.speechSynthesis.speak(utterance);
+
+    if (navigateTo) {
+      setTimeout(() => {
+        onClose(); // Close the modal
+        navigate(navigateTo); // Automatically navigate while AI continues to speak
+      }, 1500); // 1.5 seconds delay before navigating
+    }
   };
 
   const handleClose = () => {

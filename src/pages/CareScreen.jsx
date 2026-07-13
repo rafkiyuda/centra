@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Bell, HeartPulse, Shield, ShoppingBag, ArrowRight, Activity, MessageCircleQuestion, Home, Clock, QrCode, Ticket, User, ArrowLeft } from 'lucide-react';
+import { Bell, HeartPulse, Shield, ShoppingBag, ArrowRight, Activity, MessageCircleQuestion, Home, Clock, QrCode, Ticket, User, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import TutorialGuide from '../components/TutorialGuide';
 
 const CareScreen = () => {
@@ -9,6 +9,7 @@ const CareScreen = () => {
   const isTutorial = new URLSearchParams(location.search).get('tutorial') === 'true';
   const [showTutorial, setShowTutorial] = useState(isTutorial);
   const [activeTab, setActiveTab] = useState('home');
+  const [showBalance, setShowBalance] = useState(false);
 
   const formatRupiah = (angka) => {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka || 0);
@@ -49,13 +50,21 @@ const CareScreen = () => {
            marginBottom: '32px',
            boxShadow: '0 16px 32px rgba(107, 93, 194, 0.3)'
          }}>
-            <p style={{ margin: '0 0 8px 0', fontSize: '14px', opacity: 0.9 }}>Saldo</p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+               <p style={{ margin: 0, fontSize: '14px', opacity: 0.9 }}>Saldo</p>
+               <div onClick={() => setShowBalance(!showBalance)} style={{ cursor: 'pointer', padding: '6px', backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                 {showBalance ? <EyeOff size={16} color="white" /> : <Eye size={16} color="white" />}
+               </div>
+            </div>
+            
             <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '16px' }}>
                <span style={{ fontSize: '20px', fontWeight: '600' }}>Rp</span>
-               <span style={{ fontSize: '42px', fontWeight: '800', letterSpacing: '-1px' }}>1.000.000</span>
+               <span style={{ fontSize: '42px', fontWeight: '800', letterSpacing: '-1px' }}>
+                 {showBalance ? '1.000.000' : '•••••••'}
+               </span>
             </div>
             <p style={{ margin: 0, fontSize: '14px', fontWeight: '600' }}>
-               <span style={{ opacity: 0.8, fontWeight: '400' }}>Poin: </span> 2.450
+               <span style={{ opacity: 0.8, fontWeight: '400' }}>Poin: </span> {showBalance ? '2.450' : '••••'}
             </p>
          </div>
 
