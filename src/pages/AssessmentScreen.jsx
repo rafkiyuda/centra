@@ -191,7 +191,7 @@ const AssessmentScreen = () => {
               ))}
             </div>
           </>
-        ) : (
+        ) : currentStep === 4 ? (
           <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
             <input 
               type="text" 
