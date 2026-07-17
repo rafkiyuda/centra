@@ -72,15 +72,18 @@ const AssessmentScreen = () => {
   const handleNext = () => {
     if (selectedOption === null && currentStep < 4) return; 
 
-    // Save answer
-    const newAnswers = { ...answers, [currentQ.id]: currentStep < 4 ? currentQ.options[selectedOption].score : (selectedOption === 0 ? 2 : 1) };
-    setAnswers(newAnswers);
-    setSelectedOption(null); // Reset for next question
-
+    const newAnswers = { ...answers };
     if (currentStep < 4) {
+      newAnswers[currentQ.id] = currentQ.options[selectedOption].score;
+      setAnswers(newAnswers);
+      setSelectedOption(null);
       setCurrentStep(currentStep + 1);
+    } else if (currentStep === 4) {
+      newAnswers[5] = selectedOption === 0 ? 2 : 1;
+      setAnswers(newAnswers);
+      setSelectedOption(null);
+      setCurrentStep(5);
     } else {
-      // Finished assessment
       calculateScoreAndNavigate(newAnswers);
     }
   };
@@ -151,7 +154,7 @@ const AssessmentScreen = () => {
         </div>
       )}
 
-      <div className="assessment-card" style={currentStep === 4 ? { paddingTop: '32px' } : {}}>
+      <div className="assessment-card" style={currentStep >= 4 ? { paddingTop: '32px' } : {}}>
         {currentStep < 4 ? (
           <>
             <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '12px', lineHeight: '1.4' }}>
@@ -246,11 +249,53 @@ const AssessmentScreen = () => {
               </button>
             </div>
           </div>
+        ) : (
+          <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', flex: 1, alignItems: 'center' }}>
+            <h3 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '8px', textAlign: 'center', color: '#1F1F1F' }}>Pengaturan Keamanan</h3>
+            <p style={{ fontSize: '14px', color: '#666', textAlign: 'center', marginBottom: '24px' }}>Aktifkan biometrik untuk transaksi yang lebih aman dan cepat.</p>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
+              <div style={{ backgroundColor: '#F5F5F5', borderRadius: '16px', padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#EAEAEA', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '20px' }}>🔢</div>
+                  <div>
+                    <p style={{ margin: 0, fontWeight: '700', color: '#1F1F1F' }}>PIN Transaksi</p>
+                    <p style={{ margin: 0, fontSize: '12px', color: '#666' }}>Sudah diatur (6 digit)</p>
+                  </div>
+                </div>
+                <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: '#34C759', display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'white', fontWeight: 'bold', fontSize: '14px' }}>✓</div>
+              </div>
+              
+              <label style={{ backgroundColor: 'white', border: '1px solid #EAEAEA', borderRadius: '16px', padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#F0EFFF', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '20px' }}>👆</div>
+                  <div>
+                    <p style={{ margin: 0, fontWeight: '700', color: '#1F1F1F' }}>Sidik Jari</p>
+                    <p style={{ margin: 0, fontSize: '12px', color: '#666' }}>Login & bayar instan</p>
+                  </div>
+                </div>
+                <input type="checkbox" defaultChecked style={{ width: '20px', height: '20px', accentColor: '#6B5DC2', cursor: 'pointer' }} />
+              </label>
+              
+              <label style={{ backgroundColor: 'white', border: '1px solid #EAEAEA', borderRadius: '16px', padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#F0EFFF', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '20px' }}>👤</div>
+                  <div>
+                    <p style={{ margin: 0, fontWeight: '700', color: '#1F1F1F' }}>Face Verification</p>
+                    <p style={{ margin: 0, fontSize: '12px', color: '#666' }}>Gunakan wajah Anda</p>
+                  </div>
+                </div>
+                <input type="checkbox" defaultChecked style={{ width: '20px', height: '20px', accentColor: '#6B5DC2', cursor: 'pointer' }} />
+              </label>
+            </div>
+          </div>
         )}
 
-        <div style={{ textAlign: 'center', marginTop: 'auto', paddingTop: '24px', fontSize: '14px', opacity: 0.8 }}>
-          {currentStep + 1} dari 5
-        </div>
+        {currentStep < 5 && (
+          <div style={{ textAlign: 'center', marginTop: 'auto', paddingTop: '24px', fontSize: '14px', opacity: 0.8 }}>
+            {currentStep + 1} dari 5
+          </div>
+        )}
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', marginTop: 'auto', paddingTop: '24px' }}>
@@ -258,27 +303,31 @@ const AssessmentScreen = () => {
           onClick={handleNext}
           disabled={selectedOption === null && currentStep < 4}
           style={{
-            backgroundColor: (selectedOption !== null || currentStep === 4) ? '#6B5DC2' : '#B0A8E6',
+            backgroundColor: (selectedOption !== null || currentStep >= 4) ? '#6B5DC2' : '#B0A8E6',
             color: 'white',
             border: 'none',
             borderRadius: '30px',
             padding: '12px 24px',
             fontWeight: '700',
             fontSize: '16px',
-            cursor: (selectedOption !== null || currentStep === 4) ? 'pointer' : 'not-allowed',
+            cursor: (selectedOption !== null || currentStep >= 4) ? 'pointer' : 'not-allowed',
             transition: 'background-color 0.2s',
             display: 'flex',
             alignItems: 'center',
             gap: '8px'
           }}
         >
-          LANJUT {'>'}{'>'}
+          {currentStep === 5 ? 'SELESAI' : 'LANJUT >>'}
         </button>
         
         {currentStep === 4 && (
           <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', marginTop: '12px' }}>
             <button 
-              onClick={() => calculateScoreAndNavigate(answers)} 
+              onClick={() => {
+                const newAnswers = { ...answers, 5: 1 };
+                setAnswers(newAnswers);
+                setCurrentStep(5);
+              }} 
               style={{ 
                 background: 'none', 
                 border: 'none', 

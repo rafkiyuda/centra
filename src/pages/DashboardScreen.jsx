@@ -866,6 +866,8 @@ const IndependentMode = () => {
 const AssistedMode = () => {
   const navigate = useNavigate();
   const [showBalance, setShowBalance] = useState(false);
+  const [showAllFeatures, setShowAllFeatures] = useState(false);
+  
   return (
     <>
       {/* Floating Mode Indicator on the Left */}
@@ -929,7 +931,7 @@ const AssistedMode = () => {
               </div>
               <span style={{ fontSize: '14px', fontWeight: '600' }}>Top-up</span>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+            <div onClick={() => setShowAllFeatures(true)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
               <div style={{ width: '64px', height: '64px', borderRadius: '50%', border: '2px solid rgba(255,255,255,0.8)', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <Menu size={28} color="white" />
               </div>
@@ -989,6 +991,41 @@ const AssistedMode = () => {
           </div>
         </div>
       </div>
+
+      {/* ALL FEATURES MODAL / BOTTOM SHEET */}
+      {showAllFeatures && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+          <div className="animate-slide-up" style={{ backgroundColor: 'white', borderTopLeftRadius: '24px', borderTopRightRadius: '24px', padding: '24px', paddingBottom: '40px', maxHeight: '80vh', overflowY: 'auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#1F1F1F', margin: 0 }}>Semua Fitur</h3>
+              <div onClick={() => setShowAllFeatures(false)} style={{ cursor: 'pointer', padding: '8px', backgroundColor: '#F5F5F5', borderRadius: '50%', display: 'flex' }}>
+                 <X size={20} color="#1F1F1F" />
+              </div>
+            </div>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px 12px' }}>
+              {[
+                { icon: <Send size={24} color="var(--primary)" />, label: 'Transfer', route: '/transfer' },
+                { icon: <PlusCircle size={24} color="var(--primary)" />, label: 'Top-up', route: '/topup' },
+                { icon: <Users size={24} color="var(--primary)" />, label: 'Circle', route: '/circle' },
+                { icon: <ShoppingBag size={24} color="var(--primary)" />, label: 'Belanja', route: '/belanja' },
+                { icon: <Receipt size={24} color="var(--primary)" />, label: 'Bayar', route: '/bayar' },
+                { icon: <ShieldPlus size={24} color="var(--primary)" />, label: 'Care+', route: '/care' },
+                { icon: <Receipt size={24} color="var(--primary)" />, label: 'Tagihan', route: '/bayar' }
+              ].map((menu, idx) => (
+                <div key={idx} onClick={() => { setShowAllFeatures(false); navigate(menu.route); }} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                  <div style={{ width: '56px', height: '56px', borderRadius: '50%', border: '1.5px solid #E5E0FA', backgroundColor: '#F8F6FF', display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
+                    {menu.icon}
+                  </div>
+                  <span style={{ fontSize: '12px', fontWeight: '600', color: '#1F1F1F', textAlign: 'center' }}>
+                    {menu.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

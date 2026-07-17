@@ -11,6 +11,11 @@ const TransferScreen = () => {
 
   const [step, setStep] = useState(1); // 1: Dest, 2: Amount, 3: PIN, 4: Success
   
+  // Modal states
+  const [showApprovalPopup, setShowApprovalPopup] = useState(false);
+  const [showConfirmPopup, setShowConfirmPopup] = useState(false);
+  const [showVerificationSheet, setShowVerificationSheet] = useState(false);
+
   // State data
   const [destination, setDestination] = useState(null);
   const [amount, setAmount] = useState('');
@@ -30,7 +35,11 @@ const TransferScreen = () => {
 
   const handleAmountSubmit = () => {
     if (amount && parseInt(amount) > 0) {
-      setStep(3);
+      if (parseInt(amount) > 5000000) {
+        setShowApprovalPopup(true);
+      } else {
+        setShowConfirmPopup(true);
+      }
     }
   };
 
@@ -209,6 +218,61 @@ const TransferScreen = () => {
 
   return (
     <div style={{ backgroundColor: '#F8F9FE', minHeight: '100vh', paddingBottom: '40px', position: 'relative' }}>
+      
+      {/* OVERLAYS */}
+      {showConfirmPopup && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 50, padding: '24px' }}>
+          <div className="animate-fade-in" style={{ backgroundColor: 'white', padding: '24px', borderRadius: '24px', width: '100%', maxWidth: '400px', textAlign: 'center' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: '800', marginBottom: '12px', color: '#1F1F1F' }}>Konfirmasi Tujuan</h3>
+            <p style={{ color: '#666', marginBottom: '24px', fontSize: '14px' }}>Apakah tujuan rekening Anda sudah benar ke <b>{destination?.name}</b>?</p>
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <button onClick={() => setShowConfirmPopup(false)} style={{ flex: 1, padding: '14px', borderRadius: '16px', backgroundColor: '#F5F5F5', color: '#666', fontWeight: '700', border: 'none', cursor: 'pointer' }}>Batal</button>
+              <button onClick={() => { setShowConfirmPopup(false); setShowVerificationSheet(true); }} style={{ flex: 1, padding: '14px', borderRadius: '16px', backgroundColor: 'var(--primary)', color: 'white', fontWeight: '700', border: 'none', cursor: 'pointer' }}>Ya, Benar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showApprovalPopup && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 50, padding: '24px' }}>
+          <div className="animate-fade-in" style={{ backgroundColor: 'white', padding: '24px', borderRadius: '24px', width: '100%', maxWidth: '400px', textAlign: 'center' }}>
+            <div style={{ width: '64px', height: '64px', borderRadius: '50%', backgroundColor: '#FFF3E0', display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '0 auto 16px' }}>
+              <X color="#FF9800" size={32} />
+            </div>
+            <h3 style={{ fontSize: '18px', fontWeight: '800', marginBottom: '12px', color: '#1F1F1F' }}>Persetujuan Diperlukan</h3>
+            <p style={{ color: '#666', marginBottom: '24px', lineHeight: '1.5', fontSize: '14px' }}>
+              Nominal transaksi Anda lebih dari 5 juta. Mohon informasikan ke <b>Andi (Trusted Contact)</b> untuk memberikan persetujuan.
+            </p>
+            <button onClick={() => setShowApprovalPopup(false)} style={{ width: '100%', padding: '16px', borderRadius: '16px', backgroundColor: 'var(--primary)', color: 'white', fontWeight: '700', border: 'none', cursor: 'pointer' }}>Mengerti</button>
+          </div>
+        </div>
+      )}
+
+      {showVerificationSheet && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 50, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+          <div style={{ backgroundColor: 'white', borderTopLeftRadius: '24px', borderTopRightRadius: '24px', padding: '24px', animation: 'slideUp 0.3s ease-out' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: '800', marginBottom: '8px', textAlign: 'center', color: '#1F1F1F' }}>Verifikasi Transaksi</h3>
+            <p style={{ color: '#666', marginBottom: '24px', textAlign: 'center', fontSize: '14px' }}>Pilih metode verifikasi untuk melanjutkan</p>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <button onClick={() => { setShowVerificationSheet(false); setStep(3); }} style={{ padding: '16px', borderRadius: '16px', border: '1px solid #EAEAEA', backgroundColor: 'white', fontWeight: '700', color: '#1F1F1F', display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
+                 <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#F5F5F5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' }}>🔢</div>
+                 PIN
+              </button>
+              <button onClick={() => { setShowVerificationSheet(false); setStep(4); }} style={{ padding: '16px', borderRadius: '16px', border: '1px solid #EAEAEA', backgroundColor: 'white', fontWeight: '700', color: '#1F1F1F', display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
+                 <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#F5F5F5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' }}>👆</div>
+                 Sidik Jari
+              </button>
+              <button onClick={() => { setShowVerificationSheet(false); setStep(4); }} style={{ padding: '16px', borderRadius: '16px', border: '1px solid #EAEAEA', backgroundColor: 'white', fontWeight: '700', color: '#1F1F1F', display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
+                 <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#F5F5F5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' }}>👤</div>
+                 Face Verification
+              </button>
+            </div>
+            <button onClick={() => setShowVerificationSheet(false)} style={{ width: '100%', marginTop: '24px', padding: '16px', backgroundColor: 'transparent', color: '#999', fontWeight: '700', border: 'none', cursor: 'pointer' }}>Batal</button>
+          </div>
+        </div>
+      )}
+
       {showTutorial && step === 1 && (
          <TutorialGuide steps={tutorialSteps} onComplete={() => setShowTutorial(false)} />
       )}

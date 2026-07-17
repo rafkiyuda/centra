@@ -16,7 +16,7 @@ const ConfusionMonitor = ({ children }) => {
   const clickTimeoutRef = useRef(null);
   const confusionScoreRef = useRef(0);
 
-  const IDLE_TIME_LIMIT = 15000; // 15 seconds
+  const IDLE_TIME_LIMIT = 30000; // 30 seconds
   const CONFUSION_THRESHOLD = 50;
 
   const resetTimer = () => {
